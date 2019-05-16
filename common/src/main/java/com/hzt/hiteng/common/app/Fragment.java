@@ -8,10 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public abstract class Fragment extends android.support.v4.app.Fragment {
 
     protected View mRoot;
 
+    protected Unbinder mUnbinder;
     //fragment 被调用到 activity时候
 
 
@@ -54,7 +58,7 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
     protected abstract int getContentLayoutId();
 
     protected void initWidget(View view) {
-
+        mUnbinder = ButterKnife.bind(view, mRoot);
     }
 
     protected void initData() {
@@ -71,11 +75,19 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
 
     /**
      * 返回按键触发时调用
-     * @return  true 代表以处理逻辑 ，activity 不用自己finish
-     *  false 代表没处理，activity需要自己走自己逻辑
+     *
+     * @return true 代表以处理逻辑 ，activity 不用自己finish
+     * false 代表没处理，activity需要自己走自己逻辑
      */
-    public  boolean  onBackPressed(){
-            return false;
+    public boolean onBackPressed() {
+        return false;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mUnbinder != null) {
+            mUnbinder.unbind();
+        }
+    }
 }

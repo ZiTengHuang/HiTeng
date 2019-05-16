@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+
 public abstract class Activity extends AppCompatActivity {
 
     @Override
@@ -17,7 +19,8 @@ public abstract class Activity extends AppCompatActivity {
 
         //根据Activity Intent Activity 特效，没到一个activity都会bundle来实现通信，如果获取不到
         if (initArgs(getIntent().getExtras())) {
-            getContentLayoutId();
+            int layoutId = getContentLayoutId();
+            setContentView(layoutId);
             initWidget();
             initDate();
         } else {
@@ -30,7 +33,6 @@ public abstract class Activity extends AppCompatActivity {
      * 初始化窗口
      */
     protected void initWindows() {
-
     }
 
     /**
@@ -47,6 +49,7 @@ public abstract class Activity extends AppCompatActivity {
      * 初始化控件
      */
     protected void initWidget() {
+        ButterKnife.bind(this);
     }
 
     /**
@@ -65,6 +68,7 @@ public abstract class Activity extends AppCompatActivity {
 
     /**
      * 点击导航返回界面 finish当前界面
+     *
      * @return
      */
     @Override
@@ -83,15 +87,15 @@ public abstract class Activity extends AppCompatActivity {
         //获取所有的fragment
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
 
-        if (fragments!=null && fragments.size()>0){
-            for (Fragment fragment :fragments){
+        if (fragments != null && fragments.size() > 0) {
+            for (Fragment fragment : fragments) {
                 //判断是否为自己的Fragment ，是的话可以处理
-                 if (fragment instanceof com.hzt.hiteng.common.app.Fragment){
-                     //判断是否拦截了返回按钮
-                     if (((com.hzt.hiteng.common.app.Fragment)fragment).onBackPressed()){
-                         return;
-                     }
-                 }
+                if (fragment instanceof com.hzt.hiteng.common.app.Fragment) {
+                    //判断是否拦截了返回按钮
+                    if (((com.hzt.hiteng.common.app.Fragment) fragment).onBackPressed()) {
+                        return;
+                    }
+                }
             }
         }
         super.onBackPressed();
